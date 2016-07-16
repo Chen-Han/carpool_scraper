@@ -1,0 +1,4 @@
+nohup.out
+settings.ini
+*.pyc
+**/*.pyc

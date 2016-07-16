@@ -13,6 +13,40 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+
+from ConfigParser import RawConfigParser
+
+config = RawConfigParser()
+config.read('settings.ini')
+
+ACCESS_TOKEN = config.get('tokens','ACCESS_TOKEN')
+VERIFY_TOKEN = config.get('tokens','VERIFY_TOKEN')
+DATABASE_USER = config.get('database', 'DATABASE_USER')
+DATABASE_PASSWORD = config.get('database', 'DATABASE_PASSWORD')
+DATABASE_HOST = config.get('database', 'DATABASE_HOST')
+DATABASE_PORT = config.get('database', 'DATABASE_PORT')
+DATABASE_ENGINE = config.get('database', 'DATABASE_ENGINE')
+DATABASE_NAME = config.get('database', 'DATABASE_NAME')
+TEST_DATABASE_NAME = config.get('database', 'TESTSUITE_DATABASE_NAME')
+
+SECRET_KEY = config.get('secrets','SECRET_KEY')
+# CSRF_MIDDLEWARE_SECRET = config.get('secrets', 'CSRF_MIDDLEWARE_SECRET')
+
+# SESSION_COOKIE_DOMAIN = config.get('cookies','SESSION_COOKIE_DOMAIN')
+
+DEBUG = config.getboolean('debug','DEBUG')
+# TEMPLATE_DEBUG = config.getboolean('debug','TEMPLATE_DEBUG')
+# VIEW_TEST = config.getboolean('debug', 'VIEW_TEST')
+# INTERNAL_IPS = tuple(config.get('debug', 'INTERNAL_IPS').split())
+# # if config.getboolean('debug', 'SKIP_CSRF_MIDDLEWARE'):
+# #     MIDDLEWARE_CLASSES = tuple([x for x in list(MIDDLEWARE_CLASSES)
+# #                                   if not x.endswith('CsrfMiddleware')])
+
+# SERVER_EMAIL = config.get('email', 'SERVER_EMAIL')
+# EMAIL_HOST = config.get('email', 'EMAIL_HOST')
+# ADMINS = tuple(config.items('error mail'))
+# MANAGERS = tuple(config.items('404 mail'))
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -20,12 +54,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rz08l7hrnu%txv4o($mhfdn^f@#c0f6me#9edgachy83#3ggjg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -78,10 +111,11 @@ WSGI_APPLICATION = 'scraper.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'scraper',
-        'USER': 'root',
-        'PASSWORD':'',
-        'HOST':'localhost'
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD':DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT
     }
 }
 

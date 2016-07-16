@@ -5,19 +5,32 @@ import service
 import requests
 # Create your views here.
 import bot
-
-VERIFY_TOKEN = 'secret'
-ACCESS_TOKEN = "EAAYYlI8ZAZBWIBAJCTo5rEHzJcWtnRvNF5dBZBRZBa0HwHlV6ttHpAX6Nj77kSyj16olBMiiPfuf129fcQn9tXRKJr6YhvVsc8i7ZBP2aCZBoqegpClOstCa0ZCafQEZC1FW0rZAe4x1uIuXOXArMjzhoh951ZCZCOJWXlZC97unjTqFOQZDZD"
+from  scraper.settings import ACCESS_TOKEN, VERIFY_TOKEN
 
 def reply(user_id, msg):
-    data = {
-        "recipient": {"id": user_id},
-        "message": {"text": msg}
-    }
-    print(user_id)
-    print(msg)
-    resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, data=json.dumps(data), headers={'Content-Type':'Application/json'})
-    print(resp.content)
+    messages = []
+    if (type(msg) == str or type(msg) == unicode):
+        messages.append(msg)
+    else: #assume a list of strings
+        messages = msg
+    for m in messages:
+        data = {
+            "recipient": {"id": user_id},
+            "message": {"text": m}
+        }
+        print(user_id)
+        print(m)
+        resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, data=json.dumps(data), headers={'Content-Type':'Application/json'})
+        print(resp.content)
+
+
+def handle_messenger(request):
+    if (request.method=="GET"):
+        return handle_secret(request)
+    elif(request.method=="POST"):
+        return handle_message(request)
+    else:
+        return HttpResponseNotFound("Not available")
 
 def handle_secret(request):
     params = request.GET
