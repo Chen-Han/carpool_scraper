@@ -31,8 +31,8 @@ def cancel_reminder(fb_id):
 # return none if exists
 def store_post_if_not_exists(post_model):
     matching_post = Post.objects.filter(url=post_model.url)
-    if(len(matching_post) == 0):
-        post_model.save()
+    if(len(matching_post)==0):
+        result = post_model.save()
         return post_model
     else:
         return None

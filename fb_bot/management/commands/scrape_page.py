@@ -5,6 +5,15 @@ from fb_bot import service
 from fb_bot import views
 from fb_bot import bot
 
+def remind_users(saved_post):
+    if(saved_post is None): # post saved i.e. new post
+        return
+    reminders = service.find_all_reminders(saved_post)
+    if(reminders and len(reminders) > 0):
+        [views.reply(reminder.fb_user.fb_id,
+                bot.get_post_description(saved_post)) for reminder in reminders]
+        return
+
 _page_to_scrape = 'http://bbs.uwcssa.com/forum.php?mod=forumdisplay&fid=54&filter=typeid&typeid=54'
 class Command(BaseCommand):
     help = 'scrape pages'
@@ -16,10 +25,5 @@ class Command(BaseCommand):
         posts = scraper.scrape_page(_page_to_scrape)
         for post in posts:
             saved_post = service.store_post_if_not_exists(post)
-            if(saved_post): # post saved i.e. new post
-                reminders = service.find_all_reminders(saved_post)
-                if(reminders and len(reminders) > 0):
-                    for reminder in reminders:
-                        views.reply(reminder.fb_user.fb_id,
-                            bot.get_post_description(saved_post))
+            remind_users(saved_post)
 

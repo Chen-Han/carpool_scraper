@@ -48,8 +48,8 @@ def get_help_message():
 
 def get_post_description(post_model):
     return (post_model.original_title + " \n" + 
-        "Phone: " + post_model.phone if(post_model.phone) else "N/A" + "\n" + 
-        "URL: " + post_model.url +"\n")
+        "Phone: " + (post_model.phone if(post_model.phone) else "N/A") + "\n" + 
+        "URL: " + post_model.url + "\n")
 
 # return a new line separated post list
 def get_post_list_message(post_model_list):

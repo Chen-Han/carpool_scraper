@@ -87,6 +87,9 @@ class ServiceTestCase(TestCase):
         self.assertEquals(len(reminders),2)
         for reminder in reminders:
             self.assertEquals(reminder.carpool_date,ServiceTestCase.ref_date)
+        print("======reminders=====")
+        for reminder in reminders:
+            print(reminder.fb_user.fb_id)
         
     def test_cancel_reminder(self):
         result = service.cancel_reminder(ServiceTestCase.fb_id)
