@@ -87,6 +87,17 @@ def next_weekday(ref_date,weekday):
     if days_ahead < 0: # Target day already happened this week
         days_ahead += 7
     return ref_date + datetime.timedelta(days_ahead)
+def roundTime(dt=None, roundTo=60):
+   """Round a datetime object to any time laps in seconds
+   dt : datetime.datetime object, default now.
+   roundTo : Closest number of seconds to round to, default 1 minute.
+   Author: Thierry Husson 2012 - Use it as you want but don't blame me.
+   """
+   if dt == None : dt = datetime.datetime.now()
+   seconds = (dt - dt.min).seconds
+   # // is a floor division, not a comment on following line:
+   rounding = (seconds) // roundTo * roundTo
+   return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
 
 
 # main function to be used
@@ -99,7 +110,7 @@ def extract_date_info(txt,ref_date):
 
     dow = extract_dow(txt) # day of week
     if(dow>=0):
-        return next_weekday(ref_date,dow)
+        return roundTime(dt=next_weekday(ref_date,dow),roundTo=60*60*24)
     if(date and date <= 31): #last 五resort
         month = ref_date.month
         year = ref_date.year
