@@ -18,8 +18,11 @@ def reply(user_id, msg):
             "recipient": {"id": user_id},
             "message": {"text": m}
         }
-        print(user_id)
-        print(m)
+        try:
+            print(user_id)
+            print(m)
+        except UnicodeEncodeError:
+            print("unicode error")
         resp = requests.post("https://graph.facebook.com/v2.6/me/messages?access_token=" + ACCESS_TOKEN, data=json.dumps(data), headers={'Content-Type':'Application/json'})
         print(resp.content)
 
