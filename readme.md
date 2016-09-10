@@ -4,21 +4,28 @@ Overview
 ---
 scapes page on UWCSSA 
 
+We need a few things: 
+1. a facebook app 
+2. a server running in localhost:8000 accepting request
+3. background scripting to scrape http://bbs.uwcssa.com/forum-54-1.html
+4. ngrok that forwards request to localhost:8000
+
+Please see https://abhaykashyap.com/blog/post/tutorial-how-build-facebook-messenger-bot-using-django-ngrok for a detailed guide on setting up a messenger app
 
 Installation
 ----
 
 Make sure `python -V` is 2.7 
 
-```
+```bash
 # update all softwares
 sudo apt-get upgrade && sudo apt-get update # might take a while
-# mysql, skip if installed
-sudo apt-get install mysql-server
-# installing python dev, and other neccessary dependencies for xml parsing
-sudo apt-get install lib32z1-dev libxml2-dev libxslt1-dev python-dev
-# neccessary dependencies for app
-sudo apt-get install python-mysqldb
+# mysql and unzip skip if installed
+sudo apt-get install -y mysql-server unzip
+
+# installing python dev, and other neccessary dependencies
+sudo apt-get install -y lib32z1-dev libxml2-dev libxslt1-dev python-dev python-pip python-mysqldb
+
 # install ngrok, for development
 wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
 unzip ngrok-stable-linux-amd64.zip
@@ -31,17 +38,42 @@ touch settings.ini
 pip install -r requirements.txt
 ```
 
-log into mysql database, change char set to utf-8
+log into mysql database, create a database named scraper and change char set to utf-8
 this is for chinese character compatibility
-```
+```sql
+CREATE DATABASE scraper;
 ALTER DATABASE scraper CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
 
 *installing cronjob*
-```
-0,5,10,15,20,25,30,35,40,45,50,55 * * * * cd ~/scraper && python manage.py scrape_page
+
+so that scraping runs in background
+```bash
+crontab -e
+# add the following in prompted window, on the last line (without the #)
+# also note that '~/scraper` is a sample path to the scraper directory, change as necessary
+# 0,5,10,15,20,25,30,35,40,45,50,55 * * * * cd ~/scraper && python manage.py scrape_page
 ```
 
+*starting server*
+```bash
+python manage.py migrate # applying migration
+python manage.py runserver 
+#open up a new bash session
+ngrok http 8000
+
+```
+
+Configuring Facebook App
+---
+*It is highly recommended you read https://abhaykashyap.com/blog/post/tutorial-how-build-facebook-messenger-bot-using-django-ngrok first for pictorial guide*
+
+* note the address that is forwarding request to localhost:8000 when running `ngrok` command, e.g. https://7f1ce852.ngrok.io
+* now you will need to go to your ownfacebook app configuration e.g. https://developers.facebook.com/apps/1234-my-own-app/webhooks/ to set up the new webhook
+* you will need to enter a `secret`, enter whatever, but make sure it matches `VERIFY_TOKEN` in `settings.ini`
+* copy paste the app access token to `settings.ini` beside `ACCESS_TOKEN
+
+`
 Sample settings.ini
 ----
 
@@ -88,6 +120,7 @@ Adam Smith: adam@localhost
 John Wayne: john@localhost
 
 [tokens]
+# to set up the following, please see https://abhaykashyap.com/blog/post/tutorial-how-build-facebook-messenger-bot-using-django-ngrok in the token session
 VERIFY_TOKEN: my-verify-token
 ACCESS_TOKEN: my-token-here
 

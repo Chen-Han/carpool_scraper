@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -date_res*-
 
 from bs4 import BeautifulSoup
 import requests
@@ -48,6 +48,7 @@ def scrape_page(carpool_page_url):
     for thread in threads:
         try:
             title = thread.find('span',{'class':'comiis_common'})
+            print('Getting thread %s ' % title)
             link = title.find('a',{'onclick':'atarget(this)'})
             normalized_txt = regex_util.normalize(link.text)
             date = date_extractor.extract_date_info(normalized_txt,today)
@@ -73,7 +74,6 @@ def scrape_page(carpool_page_url):
                                       limit=2, file=sys.stdout)
             print "*** print_exc:"
             traceback.print_exc()
-            return get_error_message()
     return post_list
 
 if __name__ == '__main__':

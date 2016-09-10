@@ -1,7 +1,5 @@
 pytz
 requests
 Django
-unittest
 beautifulsoup4
 lxml==3.6.0
-python-mysqldb

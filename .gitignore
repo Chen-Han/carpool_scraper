@@ -4,3 +4,4 @@ settings.ini
 **/*.pyc
 .swp
 venv
+.idea/
