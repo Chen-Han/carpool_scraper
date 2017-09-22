@@ -106,7 +106,11 @@ def extract_date_info(txt,ref_date):
     month,date = extract_date_month(txt)
     if(month and date and month >= 1 and month <= 12 and date<=31):
         year = ref_date.year if(month >= ref_date.month) else ref_date.year + 1
-        return datetime.datetime(year,month,date)
+        tentative_date = datetime.datetime(year,month,date)
+        # only use the tentative date if it's within 30 days of reference
+        # we assume that carpool posts are posted at most 30 days in advance
+        if tentative_date - ref_date <= datetime.timedelta(days=30):
+            return tentative_date
 
     dow = extract_dow(txt) # day of week
     if(dow>=0):
