@@ -10,7 +10,9 @@ import regex_util
 import unittest
 from datetime import datetime
 
-def parse_request(txt, reference_date = datetime.today()):
+def parse_request(txt, reference_date = None):
+    if reference_date is None:
+        reference_date = datetime.today()
     normalized_txt = regex_util.normalize(txt)
     date = date_extractor.extract_date_info(normalized_txt,reference_date)
     location_info = location_extractor.extract_location_info(normalized_txt)
